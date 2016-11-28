@@ -4,14 +4,18 @@ set -e # quit on error
 
 STREAMLINK_PYTHON_ARCH="win32"
 STREAMLINK_PYTHON_VERSION="3.5.2"
+PYTHON_EXECUTABLE="env python"
 
-while getopts ":a:s:" option; do
+while getopts ":a:s:p:" option; do
     case $option in
         a)
             STREAMLINK_PYTHON_ARCH=$OPTARG
             ;;
         s)
             STREAMLINK_REPO_DIR=$OPTARG
+            ;;
+        p)
+            PYTHON_EXECUTABLE=$OPTARG
             ;;
         \?)
             echo "error: unknown option -$OPTARG"
@@ -70,14 +74,13 @@ pip install -t "${packages_dir}" "iso-639" "iso3166" "setuptools"
 
 # Work out the streamlink version
 # For travis nightly builds generate a version number with commit hash
-STREAMLINK_VERSION=$(python setup.py --version)
+STREAMLINK_VERSION=$($PYTHON_EXECUTABLE setup.py --version)
 sdate=$(date "+%Y%m%d" -d @$(git show -s --format="%ct" ${commit}))
 STREAMLINK_VERSION="${STREAMLINK_VERSION}-${sdate}-${commit}"
 
-env NO_DEPS=1 python "setup.py" sdist -d "${temp_dir}"
+env NO_DEPS=1 $PYTHON_EXECUTABLE "setup.py" sdist -d "${temp_dir}"
 
 popd
-
 
 unzip -o "build/temp/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip" -d "${python_dir}"
 # include the Windows 10 Universal Runtime

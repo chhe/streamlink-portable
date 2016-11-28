@@ -2,13 +2,29 @@
 # This script takes one argument, the windows arch for which to build it (win32 or amd64) and it defaults to win32
 set -e # quit on error
 
-STREAMLINK_PYTHON_ARCH=${1:-win32}
-STREAMLINK_PYTHON_VERSION=3.5.2
+STREAMLINK_PYTHON_ARCH="win32"
+STREAMLINK_PYTHON_VERSION="3.5.2"
 PYTHON_PLATFORM=${STREAMLINK_PYTHON_ARCH}
 
 if [[ "${STREAMLINK_PYTHON_ARCH}" == "amd64" ]]; then
     PYTHON_PLATFORM="win_amd64"
 fi
+
+while getopts ":a:" option; do
+    case $option in
+        a)
+            STREAMLINK_PYTHON_ARCH=$OPTARG
+            ;;
+        \?)
+            echo "error: unknown option -$OPTARG"
+            exit 1
+            ;;
+        :)
+            echo "option -$OPTARG requires an argument"
+            exit 1
+            ;;
+    esac
+done
 
 python_url="https://www.python.org/ftp/python/${STREAMLINK_PYTHON_VERSION}/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip"
 

@@ -4,11 +4,6 @@ set -e # quit on error
 
 STREAMLINK_PYTHON_ARCH="win32"
 STREAMLINK_PYTHON_VERSION="3.5.2"
-PYTHON_PLATFORM=${STREAMLINK_PYTHON_ARCH}
-
-if [[ "${STREAMLINK_PYTHON_ARCH}" == "amd64" ]]; then
-    PYTHON_PLATFORM="win_amd64"
-fi
 
 while getopts ":a:" option; do
     case $option in
@@ -25,6 +20,19 @@ while getopts ":a:" option; do
             ;;
     esac
 done
+
+case $STREAMLINK_PYTHON_ARCH in
+    win32)
+        PYTHON_PLATFORM="win32"
+        ;;
+    amd64)
+        PYTHON_PLATFORM="win_amd64"
+        ;;
+    *)
+        echo "error: unknow architecture [$STREAMLINK_PYTHON_ARCH]"
+        exit 1
+        ;;
+esac
 
 python_url="https://www.python.org/ftp/python/${STREAMLINK_PYTHON_VERSION}/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip"
 

@@ -5,8 +5,9 @@ set -e # quit on error
 STREAMLINK_PYTHON_ARCH="win32"
 STREAMLINK_PYTHON_VERSION="3.5.2"
 PYTHON_EXECUTABLE="env python"
+DO_CLEAN="false"
 
-while getopts ":a:s:p:" option; do
+while getopts ":a:s:p:c" option; do
     case $option in
         a)
             STREAMLINK_PYTHON_ARCH=$OPTARG
@@ -16,6 +17,9 @@ while getopts ":a:s:p:" option; do
             ;;
         p)
             PYTHON_EXECUTABLE=$OPTARG
+            ;;
+        c)
+            DO_CLEAN="true"
             ;;
         \?)
             echo "error: unknown option -$OPTARG"
@@ -50,6 +54,11 @@ python_dir="${bundle_dir}/python"
 packages_dir="${bundle_dir}/packages"
 streamlink_clone_dir="${temp_dir}/streamlink-clone"
 dist_dir="${root_dir}/dist"
+
+if [[ "$DO_CLEAN" == "true" ]]; then
+    rm -Rf ${root_dir}/build
+    rm -Rf ${dist_dir}
+fi
 
 mkdir -p "${bundle_dir}"
 mkdir -p "${dist_dir}"

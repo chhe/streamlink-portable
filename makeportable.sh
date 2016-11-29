@@ -5,9 +5,10 @@ set -e # quit on error
 STREAMLINK_PYTHON_ARCH="win32"
 STREAMLINK_PYTHON_VERSION="3.5.2"
 PYTHON_EXECUTABLE="env python"
+PIP_EXECUTABLE="pip"
 DO_CLEAN="false"
 
-while getopts ":a:s:p:c" option; do
+while getopts ":a:s:p:ci:" option; do
     case $option in
         a)
             STREAMLINK_PYTHON_ARCH=$OPTARG
@@ -17,6 +18,9 @@ while getopts ":a:s:p:c" option; do
             ;;
         p)
             PYTHON_EXECUTABLE=$OPTARG
+            ;;
+        i)
+            PIP_EXECUTABLE=$OPTARG
             ;;
         c)
             DO_CLEAN="true"
@@ -78,8 +82,8 @@ git checkout .
 
 commit=$(git rev-parse --short HEAD)
 
-pip download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
-pip install -t "${packages_dir}" "iso-639" "iso3166" "setuptools"
+${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
+${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools"
 
 # Work out the streamlink version
 # For travis nightly builds generate a version number with commit hash

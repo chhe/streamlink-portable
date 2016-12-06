@@ -61,7 +61,6 @@ dist_dir="${root_dir}/dist"
 
 if [[ "$DO_CLEAN" == "true" ]]; then
     rm -Rf ${root_dir}/build
-    rm -Rf ${dist_dir}
 fi
 
 mkdir -p "${bundle_dir}"

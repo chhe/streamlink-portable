@@ -79,16 +79,12 @@ fi
 pushd "${STREAMLINK_REPO_DIR}"
 git checkout .
 
-commit=$(git rev-parse --short HEAD)
-
 ${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
 ${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools"
 
-# Work out the streamlink version
-# For travis nightly builds generate a version number with commit hash
-STREAMLINK_VERSION=$($PYTHON_EXECUTABLE setup.py --version)
-sdate=$(date "+%Y%m%d" -d @$(git show -s --format="%ct" ${commit}))
-STREAMLINK_VERSION="${STREAMLINK_VERSION}-${sdate}-${commit}"
+STREAMLINK_VERSION="$(git describe --tags | sed 's/v//g')"
+sdate=$(date "+%Y%m%d")
+STREAMLINK_VERSION="${STREAMLINK_VERSION}-${sdate}"
 
 env NO_DEPS=1 $PYTHON_EXECUTABLE "setup.py" sdist -d "${temp_dir}"
 
@@ -114,6 +110,8 @@ cp -r "${STREAMLINK_REPO_DIR}/win32/LICENSE.txt" "${bundle_dir}/LICENSE.txt"
 
 sed -i "s/^rtmpdump=.*/#rtmpdump=/g" "${bundle_dir}/streamlinkrc.default"
 sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/streamlinkrc.default"
+
+sed -i '/__version__ =/c\__version__ = "'${STREAMLINK_VERSION}'"' "${bundle_dir}/packages/streamlink/__init__.py"
 
 pushd "${temp_dir}"
 zip --exclude "*/__pycache__/*" -r "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.zip" "streamlink"

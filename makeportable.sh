@@ -84,6 +84,7 @@ ${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools"
 
 STREAMLINK_VERSION="$(git describe --tags | sed 's/v//g')"
 sdate=$(date "+%Y%m%d")
+STREAMLINK_VERSION="${STREAMLINK_VERSION}-$(git rev-parse --abbrev-ref HEAD)"
 STREAMLINK_VERSION="${STREAMLINK_VERSION}-${sdate}"
 
 env NO_DEPS=1 $PYTHON_EXECUTABLE "setup.py" sdist -d "${temp_dir}"

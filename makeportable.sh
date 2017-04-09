@@ -82,10 +82,11 @@ git checkout .
 ${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
 ${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools"
 
-STREAMLINK_VERSION="$(git describe --tags | sed 's/v//g')"
+STREAMLINK_VERSION=$(python setup.py --version)
+STREAMLINK_VERSION="${STREAMLINK_VERSION} ($(git describe --tags | sed 's/v//g')"
 sdate=$(date "+%Y%m%d")
 STREAMLINK_VERSION="${STREAMLINK_VERSION}-$(git rev-parse --abbrev-ref HEAD)"
-STREAMLINK_VERSION="${STREAMLINK_VERSION}-${sdate}"
+STREAMLINK_VERSION="${STREAMLINK_VERSION}-${sdate})"
 
 env NO_DEPS=1 $PYTHON_EXECUTABLE "setup.py" sdist -d "${temp_dir}"
 
@@ -112,7 +113,7 @@ cp -r "${STREAMLINK_REPO_DIR}/win32/LICENSE.txt" "${bundle_dir}/LICENSE.txt"
 sed -i "s/^rtmpdump=.*/#rtmpdump=/g" "${bundle_dir}/streamlinkrc.default"
 sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/streamlinkrc.default"
 
-sed -i '/__version__ =/c\__version__ = "'${STREAMLINK_VERSION}'"' "${bundle_dir}/packages/streamlink/__init__.py"
+sed -i "/__version__ =/c\__version__ = \"${STREAMLINK_VERSION}\"" "${bundle_dir}/packages/streamlink/__init__.py"
 
 pushd "${temp_dir}"
 7z a -r -mx9 -ms=on -mmt -xr!__pycache__/ "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.7z" "streamlink"

@@ -118,5 +118,4 @@ sed -i "/__version__ =/c\__version__ = \"${STREAMLINK_VERSION}\"" "${bundle_dir}
 
 pushd "${temp_dir}"
 7z a -r -mx9 -ms=on -mmt -xr!__pycache__/ "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION_EXTENDED}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.7z" "streamlink"
-cp "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION_EXTENDED}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.7z" "${dist_dir}/streamlink-portable-latest-${STREAMLINK_PYTHON_ARCH}.7z"
 popd

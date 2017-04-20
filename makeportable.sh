@@ -6,9 +6,10 @@ STREAMLINK_PYTHON_ARCH="win32"
 STREAMLINK_PYTHON_VERSION="3.5.2"
 PYTHON_EXECUTABLE="env python"
 PIP_EXECUTABLE="pip"
+USE_SEVEN_ZIP="false"
 DO_CLEAN="false"
 
-while getopts ":a:s:p:ci:" option; do
+while getopts ":a:s:p:c7i:" option; do
     case $option in
         a)
             STREAMLINK_PYTHON_ARCH=$OPTARG
@@ -24,6 +25,9 @@ while getopts ":a:s:p:ci:" option; do
             ;;
         c)
             DO_CLEAN="true"
+            ;;
+        7)
+            USE_SEVEN_ZIP="true"
             ;;
         \?)
             echo "error: unknown option -$OPTARG"
@@ -117,5 +121,11 @@ sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/streamlinkrc.defau
 sed -i "/__version__ =/c\__version__ = \"${STREAMLINK_VERSION}\"" "${bundle_dir}/packages/streamlink/__init__.py"
 
 pushd "${temp_dir}"
-7z a -r -mx9 -ms=on -mmt -xr!__pycache__/ "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION_EXTENDED}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.7z" "streamlink"
+
+if [[ "${USE_SEVEN_ZIP}" == "true" ]]; then
+    7z a -r -mx9 -ms=on -mmt -xr!__pycache__/ "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION_EXTENDED}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.7z" "streamlink"
+else
+    zip --exclude "*/__pycache__/*" -r "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION_EXTENDED}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.zip" "streamlink"
+fi
+
 popd

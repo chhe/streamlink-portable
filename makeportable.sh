@@ -84,7 +84,7 @@ pushd "${STREAMLINK_REPO_DIR}"
 git checkout .
 
 ${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
-${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools"
+${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "six" "appdirs" "packaging" "pyparsing" "urllib3" "idna" "chardet" "certifi"
 
 STREAMLINK_VERSION=$(python setup.py --version)
 STREAMLINK_VERSION_EXTENDED="$(git describe --tags | sed 's/v//g')"

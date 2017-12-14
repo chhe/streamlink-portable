@@ -86,14 +86,14 @@ git checkout .
 ${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3"
 ${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "six" "appdirs" "packaging" "pyparsing" "urllib3" "idna" "chardet" "certifi" "websocket-client" "PySocks!=1.5.7,>=1.5.6" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
 
-STREAMLINK_VERSION=$(python setup.py --version)
+STREAMLINK_VERSION=$(${PYTHON_EXECUTABLE} setup.py --version)
 STREAMLINK_VERSION_EXTENDED="$(git describe --tags | sed 's/v//g')"
 sdate=$(date "+%Y%m%d")
 STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-$(git rev-parse --abbrev-ref HEAD)"
 STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-${sdate}"
 STREAMLINK_VERSION="${STREAMLINK_VERSION} (${STREAMLINK_VERSION_EXTENDED})"
 
-env NO_DEPS=1 $PYTHON_EXECUTABLE "setup.py" sdist -d "${temp_dir}"
+env NO_DEPS=1 ${PYTHON_EXECUTABLE} "setup.py" sdist -d "${temp_dir}"
 
 popd
 

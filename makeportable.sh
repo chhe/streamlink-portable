@@ -83,8 +83,8 @@ fi
 pushd "${STREAMLINK_REPO_DIR}"
 git checkout .
 
-${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
-${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "six" "appdirs" "packaging" "pyparsing" "urllib3" "idna" "chardet" "certifi"
+${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3"
+${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "six" "appdirs" "packaging" "pyparsing" "urllib3" "idna" "chardet" "certifi" "websocket-client" "PySocks!=1.5.7,>=1.5.6" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
 
 STREAMLINK_VERSION=$(python setup.py --version)
 STREAMLINK_VERSION_EXTENDED="$(git describe --tags | sed 's/v//g')"
@@ -102,7 +102,6 @@ unzip -o "build/temp/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTH
 unzip -o "msvcrt_${PYTHON_PLATFORM}.zip" -d "${python_dir}"
 
 unzip -o "build/temp/pycryptodome*.whl" -d "${packages_dir}"
-unzip -o "build/temp/requests*.whl" -d "${packages_dir}"
 
 cp -r "${STREAMLINK_REPO_DIR}/src/"* "${bundle_dir}/packages"
 cp "${root_dir}/streamlink-script.py" "${bundle_dir}/streamlink-script.py"

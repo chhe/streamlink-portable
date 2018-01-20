@@ -80,11 +80,14 @@ if [[ -z ${STREAMLINK_REPO_DIR} ]]; then
     STREAMLINK_REPO_DIR=${streamlink_clone_dir}
 fi
 
-pushd "${STREAMLINK_REPO_DIR}"
+cd "${STREAMLINK_REPO_DIR}"
+
 git checkout .
 
 ${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3"
 ${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "six" "appdirs" "packaging" "pyparsing" "urllib3" "idna" "chardet" "certifi" "websocket-client" "PySocks!=1.5.7,>=1.5.6" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
+
+cd "${STREAMLINK_REPO_DIR}"
 
 STREAMLINK_VERSION=$(${PYTHON_EXECUTABLE} setup.py --version)
 STREAMLINK_VERSION_EXTENDED="$(git describe --tags | sed 's/v//g')"
@@ -95,7 +98,7 @@ STREAMLINK_VERSION="${STREAMLINK_VERSION} (${STREAMLINK_VERSION_EXTENDED})"
 
 env NO_DEPS=1 ${PYTHON_EXECUTABLE} "setup.py" sdist -d "${temp_dir}"
 
-popd
+cd "${root_dir}"
 
 unzip -o "build/temp/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip" -d "${python_dir}"
 # include the Windows 10 Universal Runtime
@@ -119,7 +122,7 @@ sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/streamlinkrc.defau
 
 sed -i "/__version__ =/c\__version__ = \"${STREAMLINK_VERSION}\"" "${bundle_dir}/packages/streamlink/__init__.py"
 
-pushd "${temp_dir}"
+cd "${temp_dir}"
 
 if [[ "${USE_SEVEN_ZIP}" == "true" ]]; then
     7z a -r -mx9 -ms=on -mmt -xr!__pycache__/ "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION_EXTENDED}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.7z" "streamlink"
@@ -127,4 +130,4 @@ else
     zip --exclude "*/__pycache__/*" -r "${dist_dir}/streamlink-portable-${STREAMLINK_VERSION_EXTENDED}-py${STREAMLINK_PYTHON_VERSION}-${STREAMLINK_PYTHON_ARCH}.zip" "streamlink"
 fi
 
-popd
+cd "${root_dir}"

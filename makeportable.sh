@@ -3,7 +3,7 @@
 set -e # quit on error
 
 STREAMLINK_PYTHON_ARCH="win32"
-STREAMLINK_PYTHON_VERSION="3.5.4"
+STREAMLINK_PYTHON_VERSION="3.6.5"
 PYTHON_EXECUTABLE="env python"
 PIP_EXECUTABLE="pip"
 USE_SEVEN_ZIP="false"
@@ -84,8 +84,8 @@ cd "${STREAMLINK_REPO_DIR}"
 
 git checkout .
 
-${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "35" --abi "cp35m" -d "${temp_dir}" "pycryptodome==3.4.3"
-${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "six" "appdirs" "packaging" "pyparsing" "urllib3" "idna" "chardet" "certifi" "websocket-client" "PySocks!=1.5.7,>=1.5.6" "requests>=1.0,!=2.12.0,!=2.12.1,<3.0"
+${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "36" --abi "cp36m" -d "${temp_dir}" "pycryptodome==3.4.3"
+${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "requests>=1.0,>=2.18.0,<3.0" "websocket-client" "PySocks!=1.5.7,>=1.5.6" "isodate"
 
 cd "${STREAMLINK_REPO_DIR}"
 

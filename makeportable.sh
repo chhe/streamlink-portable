@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# This script takes one argument, the windows arch for which to build it (win32 or amd64) and it defaults to win32
 set -e # quit on error
 
 STREAMLINK_PYTHON_ARCH="win32"
@@ -64,7 +63,7 @@ streamlink_clone_dir="${temp_dir}/streamlink-clone"
 dist_dir="${root_dir}/dist"
 
 if [[ "$DO_CLEAN" == "true" ]]; then
-    rm -Rf ${root_dir}/build
+    rm -Rf "${root_dir}/build"
 fi
 
 mkdir -p "${bundle_dir}"
@@ -75,7 +74,7 @@ wget "${python_url}" -c -O "build/temp/python-${STREAMLINK_PYTHON_VERSION}-embed
 if [[ -z ${STREAMLINK_REPO_DIR} ]]; then
     # remove any old streamlink clone
     rm -rf "${streamlink_clone_dir}"
-    git clone https://github.com/streamlink/streamlink.git ${streamlink_clone_dir}
+    git clone https://github.com/streamlink/streamlink.git "${streamlink_clone_dir}"
 
     STREAMLINK_REPO_DIR=${streamlink_clone_dir}
 fi
@@ -96,7 +95,7 @@ STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-$(git rev-parse --ab
 STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-${sdate}"
 STREAMLINK_VERSION="${STREAMLINK_VERSION} (${STREAMLINK_VERSION_EXTENDED})"
 
-env NO_DEPS=1 ${PYTHON_EXECUTABLE} "setup.py" sdist -d "${temp_dir}"
+env NO_DEPS=1 "${PYTHON_EXECUTABLE}" "setup.py" sdist -d "${temp_dir}"
 
 cd "${root_dir}"
 

@@ -3,7 +3,7 @@ set -e # quit on error
 
 STREAMLINK_PYTHON_ARCH="win32"
 STREAMLINK_PYTHON_VERSION="3.7.4"
-PYTHON_EXECUTABLE="env python"
+PYTHON_EXECUTABLE="python"
 PIP_EXECUTABLE="pip"
 USE_SEVEN_ZIP="false"
 DO_CLEAN="false"

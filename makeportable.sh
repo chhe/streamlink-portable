@@ -114,9 +114,9 @@ cp "${root_dir}/streamlink-script.py" "${bundle_dir}/streamlink-script.py"
 cp "${root_dir}/streamlink.bat" "${bundle_dir}/streamlink.bat"
 cp "${root_dir}/NOTICE" "${bundle_dir}/NOTICE.txt"
 
-wget -P "${ffmpeg_dir}" https://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-4.2.2-win32-static.zip
-unzip "${ffmpeg_dir}/ffmpeg-4.2.2-win32-static.zip" -d "${ffmpeg_dir}"
-ffmpeg_extracted_dir="${ffmpeg_dir}/ffmpeg-4.2.2-win32-static"
+wget -P "${ffmpeg_dir}" https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-4.3.1-essentials_build.zip
+unzip "${ffmpeg_dir}/ffmpeg-4.3.1-essentials_build.zip" -d "${ffmpeg_dir}"
+ffmpeg_extracted_dir="${ffmpeg_dir}/ffmpeg-4.3.1-essentials_build"
 wget -P "${rtmpdump_dir}" https://rtmpdump.mplayerhq.hu/download/rtmpdump-2.3-windows.zip
 unzip "${rtmpdump_dir}/rtmpdump-2.3-windows.zip" -d "${rtmpdump_dir}"
 rtmpdump_extracted_dir="${rtmpdump_dir}/rtmpdump-2.3"
@@ -126,7 +126,7 @@ cp -r "${rtmpdump_extracted_dir}/rtmpdump.exe" "${bundle_dir}/rtmpdump/"
 cp -r "${rtmpdump_extracted_dir}/COPYING" "${bundle_dir}/rtmpdump/"
 cp -r "${rtmpdump_extracted_dir}/README" "${bundle_dir}/rtmpdump/"
 cp -r "${ffmpeg_extracted_dir}/bin/ffmpeg.exe" "${bundle_dir}/ffmpeg/"
-cp -r "${ffmpeg_extracted_dir}/LICENSE.txt" "${bundle_dir}/ffmpeg/"
+cp -r "${ffmpeg_extracted_dir}/LICENSE" "${bundle_dir}/ffmpeg/"
 cp -r "${ffmpeg_extracted_dir}/README.txt" "${bundle_dir}/ffmpeg/"
 cp -r "${STREAMLINK_REPO_DIR}/win32/streamlinkrc" "${bundle_dir}/streamlinkrc.default"
 cp -r "${STREAMLINK_REPO_DIR}/win32/THIRD-PARTY.txt" "${bundle_dir}/THIRD-PARTY.txt"

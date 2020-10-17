@@ -114,9 +114,10 @@ cp "${root_dir}/streamlink-script.py" "${bundle_dir}/streamlink-script.py"
 cp "${root_dir}/streamlink.bat" "${bundle_dir}/streamlink.bat"
 cp "${root_dir}/NOTICE" "${bundle_dir}/NOTICE.txt"
 
-wget -P "${ffmpeg_dir}" https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-4.3.1-essentials_build.zip
-unzip "${ffmpeg_dir}/ffmpeg-4.3.1-essentials_build.zip" -d "${ffmpeg_dir}"
-ffmpeg_extracted_dir="${ffmpeg_dir}/ffmpeg-4.3.1-essentials_build"
+ffmpeg_version=$(curl https://www.gyan.dev/ffmpeg/builds/release-version)
+wget -P "${ffmpeg_dir}" https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-${ffmpeg_version}-essentials_build.zip
+unzip "${ffmpeg_dir}/ffmpeg-${ffmpeg_version}-essentials_build.zip" -d "${ffmpeg_dir}"
+ffmpeg_extracted_dir="${ffmpeg_dir}/ffmpeg-${ffmpeg_version}-essentials_build"
 wget -P "${rtmpdump_dir}" https://rtmpdump.mplayerhq.hu/download/rtmpdump-2.3-windows.zip
 unzip "${rtmpdump_dir}/rtmpdump-2.3-windows.zip" -d "${rtmpdump_dir}"
 rtmpdump_extracted_dir="${rtmpdump_dir}/rtmpdump-2.3"

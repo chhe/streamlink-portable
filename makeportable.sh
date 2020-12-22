@@ -2,7 +2,7 @@
 set -e # quit on error
 
 STREAMLINK_PYTHON_ARCH="win32"
-STREAMLINK_PYTHON_VERSION="3.7.9"
+STREAMLINK_PYTHON_VERSION="3.9.1"
 PYTHON_EXECUTABLE="python"
 PIP_EXECUTABLE="pip"
 USE_SEVEN_ZIP="false"
@@ -87,7 +87,7 @@ cd "${STREAMLINK_REPO_DIR}"
 
 git checkout .
 
-${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "37" --abi "cp37m" -d "${temp_dir}" "pycryptodome"
+${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "39" --abi "cp39" -d "${temp_dir}" "pycryptodome"
 ${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "requests>=1.0,>=2.18.0,<3.0" "websocket-client" "PySocks!=1.5.7,>=1.5.6" "isodate"
 
 cd "${STREAMLINK_REPO_DIR}"

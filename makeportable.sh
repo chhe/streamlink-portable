@@ -129,11 +129,11 @@ cp -r "${rtmpdump_extracted_dir}/README" "${bundle_dir}/rtmpdump/"
 cp -r "${ffmpeg_extracted_dir}/bin/ffmpeg.exe" "${bundle_dir}/ffmpeg/"
 cp -r "${ffmpeg_extracted_dir}/LICENSE" "${bundle_dir}/ffmpeg/"
 cp -r "${ffmpeg_extracted_dir}/README.txt" "${bundle_dir}/ffmpeg/"
-cp -r "${STREAMLINK_REPO_DIR}/win32/streamlinkrc" "${bundle_dir}/streamlinkrc.default"
+cp -r "${STREAMLINK_REPO_DIR}/win32/config" "${bundle_dir}/config.default"
 cp -r "${STREAMLINK_REPO_DIR}/win32/THIRD-PARTY.txt" "${bundle_dir}/THIRD-PARTY.txt"
 
-sed -i "s/^rtmpdump=.*/#rtmpdump=/g" "${bundle_dir}/streamlinkrc.default"
-sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/streamlinkrc.default"
+sed -i "s/^rtmpdump=.*/#rtmpdump=/g" "${bundle_dir}/config.default"
+sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/config.default"
 
 sed -i "/__version__ =/c\__version__ = \"${STREAMLINK_VERSION}\"" "${bundle_dir}/packages/streamlink/__init__.py"
 

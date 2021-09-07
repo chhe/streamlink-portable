@@ -87,8 +87,9 @@ cd "${STREAMLINK_REPO_DIR}"
 
 git checkout .
 
+${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "39" --abi "cp39" -d "${temp_dir}" "lxml"
 ${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "39" --abi "cp39" -d "${temp_dir}" "pycryptodome>=3.4.3,<4"
-${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "requests>=2.21.0,<3.0" "websocket-client" "PySocks!=1.5.7,>=1.5.6" "isodate" "lxml"
+${PIP_EXECUTABLE} install -t "${packages_dir}" "iso-639" "iso3166" "setuptools" "requests>=2.21.0,<3.0" "websocket-client" "PySocks!=1.5.7,>=1.5.6" "isodate"
 
 cd "${STREAMLINK_REPO_DIR}"
 

@@ -103,11 +103,11 @@ env NO_DEPS=1 "${PYTHON_EXECUTABLE}" "setup.py" sdist -d "${temp_dir}"
 
 cd "${root_dir}"
 
-unzip -o "build/temp/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip" -d "${python_dir}"
+unzip -o "${temp_dir}/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip" -d "${python_dir}"
 # include the Windows 10 Universal Runtime
 unzip -o "msvcrt_${PYTHON_PLATFORM}.zip" -d "${python_dir}"
 
-unzip -o "build/temp/*.whl" -d "${packages_dir}"
+unzip -o "${temp_dir}/*.whl" -d "${packages_dir}"
 
 cp -r "${STREAMLINK_REPO_DIR}/src/"* "${bundle_dir}/packages"
 cp "${root_dir}/streamlink-script.py" "${bundle_dir}/streamlink-script.py"

@@ -57,7 +57,6 @@ python_url="https://www.python.org/ftp/python/${STREAMLINK_PYTHON_VERSION}/pytho
 root_dir="$(pwd)"
 temp_dir="${root_dir}/build/temp"
 ffmpeg_dir="${root_dir}/build/ffmpeg"
-rtmpdump_dir="${root_dir}/build/rtmpdump"
 bundle_dir="${temp_dir}/streamlink"
 python_dir="${bundle_dir}/python"
 packages_dir="${bundle_dir}/packages"
@@ -71,7 +70,6 @@ fi
 mkdir -p "${bundle_dir}"
 mkdir -p "${dist_dir}"
 mkdir -p "${ffmpeg_dir}"
-mkdir -p "${rtmpdump_dir}"
 
 wget "${python_url}" -c -O "build/temp/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip"
 
@@ -119,20 +117,12 @@ ffmpeg_version=$(curl https://www.gyan.dev/ffmpeg/builds/release-version)
 wget -P "${ffmpeg_dir}" https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-${ffmpeg_version}-essentials_build.zip
 unzip "${ffmpeg_dir}/ffmpeg-${ffmpeg_version}-essentials_build.zip" -d "${ffmpeg_dir}"
 ffmpeg_extracted_dir="${ffmpeg_dir}/ffmpeg-${ffmpeg_version}-essentials_build"
-wget -P "${rtmpdump_dir}" https://rtmpdump.mplayerhq.hu/download/rtmpdump-2.3-windows.zip
-unzip "${rtmpdump_dir}/rtmpdump-2.3-windows.zip" -d "${rtmpdump_dir}"
-rtmpdump_extracted_dir="${rtmpdump_dir}/rtmpdump-2.3"
 
-mkdir -p "$bundle_dir/rtmpdump" "$bundle_dir/ffmpeg"
-cp -r "${rtmpdump_extracted_dir}/rtmpdump.exe" "${bundle_dir}/rtmpdump/"
-cp -r "${rtmpdump_extracted_dir}/COPYING" "${bundle_dir}/rtmpdump/"
-cp -r "${rtmpdump_extracted_dir}/README" "${bundle_dir}/rtmpdump/"
 cp -r "${ffmpeg_extracted_dir}/bin/ffmpeg.exe" "${bundle_dir}/ffmpeg/"
 cp -r "${ffmpeg_extracted_dir}/LICENSE" "${bundle_dir}/ffmpeg/"
 cp -r "${ffmpeg_extracted_dir}/README.txt" "${bundle_dir}/ffmpeg/"
 cp -r "${STREAMLINK_REPO_DIR}/win32/config" "${bundle_dir}/config.default"
 
-sed -i "s/^rtmpdump=.*/#rtmpdump=/g" "${bundle_dir}/config.default"
 sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/config.default"
 
 sed -i "/__version__ =/c\__version__ = \"${STREAMLINK_VERSION}\"" "${bundle_dir}/packages/streamlink/__init__.py"

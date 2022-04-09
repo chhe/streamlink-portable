@@ -121,7 +121,7 @@ mkdir -p "$bundle_dir/ffmpeg"
 cp -r "${ffmpeg_extracted_dir}/bin/ffmpeg.exe" "${bundle_dir}/ffmpeg/"
 cp -r "${ffmpeg_extracted_dir}/LICENSE" "${bundle_dir}/ffmpeg/"
 cp -r "${ffmpeg_extracted_dir}/README.txt" "${bundle_dir}/ffmpeg/"
-cp -r "${STREAMLINK_REPO_DIR}/win32/config" "${bundle_dir}/config.default"
+wget -o "${bundle_dir}/config.default" "https://raw.githubusercontent.com/streamlink/windows-installer/master/files/config"
 
 sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/config.default"
 

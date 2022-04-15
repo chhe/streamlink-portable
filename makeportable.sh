@@ -86,18 +86,21 @@ cd "${STREAMLINK_REPO_DIR}"
 git checkout .
 
 ${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "${STREAMLINK_PYTHON_VERSION}" --implementation "cp" -d "${temp_dir}" "pycryptodome>=3.4.3,<4.0" "lxml>=4.6.4,<5.0"
-${PIP_EXECUTABLE} install -t "${packages_dir}" "pycountry" "setuptools" "requests>=2.26.0,<3.0" "websocket-client>=0.58.0" "PySocks!=1.5.7,>=1.5.6" "isodate" "versioningit"
+${PIP_EXECUTABLE} install -t "${packages_dir}" "pycountry" "setuptools" "requests>=2.26.0,<3.0" "websocket-client>=0.58.0" "PySocks!=1.5.7,>=1.5.6" "isodate"
 
 cd "${STREAMLINK_REPO_DIR}"
 
 STREAMLINK_VERSION=$(${PYTHON_EXECUTABLE} setup.py --version)
+STREAMLINK_VERSION=$(echo "${STREAMLINK_VERSION}" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/g')
 STREAMLINK_VERSION_EXTENDED="$(git describe --tags | sed 's/v//g')"
-sdate=$(date "+%Y%m%d")
+build_date=$(date "+%Y%m%d")
 STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-$(git rev-parse --abbrev-ref HEAD)"
-STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-${sdate}"
+STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-${build_date}"
 STREAMLINK_VERSION="${STREAMLINK_VERSION} (${STREAMLINK_VERSION_EXTENDED})"
 
-env NO_DEPS=1 "${PYTHON_EXECUTABLE}" "setup.py" sdist -d "${temp_dir}"
+"${PYTHON_EXECUTABLE}" "setup.py" sdist -d "${temp_dir}"
+"${PYTHON_EXECUTABLE}" "setup.py" bdist_wheel  -d "${temp_dir}"
+"${PYTHON_EXECUTABLE}" "setup.py" bdist_wheel --plat-name "${PYTHON_PLATFORM}" -d "${temp_dir}"
 
 cd "${root_dir}"
 
@@ -105,9 +108,11 @@ unzip -o "${temp_dir}/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYT
 # include the Windows 10 Universal Runtime
 unzip -o "msvcrt_${PYTHON_PLATFORM}.zip" -d "${python_dir}"
 
-unzip -o "${temp_dir}/*.whl" -d "${packages_dir}"
+unzip -o "${temp_dir}/lxml*.whl" -d "${packages_dir}"
+unzip -o "${temp_dir}/pycryptodome*.whl" -d "${packages_dir}"
+unzip -o "${temp_dir}/streamlink*none-any.whl" -d "${packages_dir}"
+unzip -o "${temp_dir}/streamlink*${PYTHON_PLATFORM}.whl" -d "${packages_dir}"
 
-cp -r "${STREAMLINK_REPO_DIR}/src/"* "${bundle_dir}/packages"
 cp "${root_dir}/streamlink-script.py" "${bundle_dir}/streamlink-script.py"
 cp "${root_dir}/streamlink.bat" "${bundle_dir}/streamlink.bat"
 cp "${root_dir}/NOTICE" "${bundle_dir}/NOTICE.txt"
@@ -125,7 +130,8 @@ wget -O "${bundle_dir}/config.default" "https://raw.githubusercontent.com/stream
 
 sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/config.default"
 
-sed -i "/__version__ =/c\__version__ = \"${STREAMLINK_VERSION}\"" "${bundle_dir}/packages/streamlink/__init__.py"
+rm "${bundle_dir}/packages/streamlink/_version.py"
+echo "__version__ = \"${STREAMLINK_VERSION}\"" > "${bundle_dir}/packages/streamlink/_version.py"
 
 cd "${temp_dir}"
 

@@ -85,7 +85,7 @@ cd "${STREAMLINK_REPO_DIR}"
 
 git checkout .
 
-${PIP_EXECUTABLE} download --only-binary ":all:" --platform "${PYTHON_PLATFORM}" --python-version "${STREAMLINK_PYTHON_VERSION}" --implementation "cp" -d "${temp_dir}" "pycryptodome>=3.4.3,<4.0" "lxml>=4.6.4,<5.0"
+${PIP_EXECUTABLE} install --only-binary=:all: --platform "${PYTHON_PLATFORM}" --python-version "${STREAMLINK_PYTHON_VERSION}" --implementation "cp" --target "${packages_dir}" "pycryptodome>=3.4.3,<4.0" "lxml>=4.6.4,<5.0"
 ${PIP_EXECUTABLE} install -t "${packages_dir}" "pycountry" "setuptools" "requests>=2.26.0,<3.0" "websocket-client>=0.58.0" "PySocks!=1.5.7,>=1.5.6" "isodate"
 
 cd "${STREAMLINK_REPO_DIR}"
@@ -108,8 +108,6 @@ unzip -o "${temp_dir}/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYT
 # include the Windows 10 Universal Runtime
 unzip -o "msvcrt_${PYTHON_PLATFORM}.zip" -d "${python_dir}"
 
-unzip -o "${temp_dir}/lxml*.whl" -d "${packages_dir}"
-unzip -o "${temp_dir}/pycryptodome*.whl" -d "${packages_dir}"
 unzip -o "${temp_dir}/streamlink*none-any.whl" -d "${packages_dir}"
 unzip -o "${temp_dir}/streamlink*${PYTHON_PLATFORM}.whl" -d "${packages_dir}"
 

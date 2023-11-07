@@ -85,8 +85,8 @@ cd "${STREAMLINK_REPO_DIR}"
 
 git checkout .
 
-${PIP_EXECUTABLE} install --only-binary=:all: --platform "${PYTHON_PLATFORM}" --python-version "${STREAMLINK_PYTHON_VERSION}" --implementation "cp" --target "${packages_dir}" --upgrade "pycryptodome>=3.4.3,<4.0"
-${PIP_EXECUTABLE} install -t "${packages_dir}" --upgrade "pycountry" "setuptools" "requests>=2.26.0,<3.0" "websocket-client>=0.58.0" "PySocks!=1.5.7,>=1.5.6" "isodate"
+${PIP_EXECUTABLE} install --only-binary=:all: --platform "${PYTHON_PLATFORM}" --python-version "${STREAMLINK_PYTHON_VERSION}" --implementation "cp" --target "${packages_dir}" --upgrade "pycryptodome==3.19.0"
+${PIP_EXECUTABLE} install -t "${packages_dir}" --upgrade "pycountry==22.3.5" "setuptools==68.2.2" "PySocks==1.7.1" "attrs==23.1.0" "certifi==2023.7.22" "cffi==1.16.0" "charset_normalizer==3.3.1" "h11==0.14.0" "idna==3.4" "isodate==0.6.1" "outcome==1.3.0" "pycparser==2.21" "requests==2.31.0" "six==1.16.0" "sniffio==1.3.0" "sortedcontainers==2.4.0" "trio==0.22.2" "trio_websocket==0.11.1" "typing_extensions==4.8.0" "urllib3==2.0.7" "websocket_client==1.6.4" "wsproto==1.2.0"
 
 cd "${STREAMLINK_REPO_DIR}"
 

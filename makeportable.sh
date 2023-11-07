@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e # quit on error
+set -eo pipefail
 
 STREAMLINK_PYTHON_ARCH="win32"
 STREAMLINK_PYTHON_VERSION="3.12.0"

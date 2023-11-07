@@ -7,6 +7,7 @@ PYTHON_EXECUTABLE="python"
 PIP_EXECUTABLE="pip"
 USE_SEVEN_ZIP="false"
 DO_CLEAN="false"
+BUILDNAME="py311-x86"
 
 while getopts ":a:s:p:c7i:" option; do
     case $option in
@@ -42,9 +43,11 @@ done
 case $STREAMLINK_PYTHON_ARCH in
     win32)
         PYTHON_PLATFORM="win32"
+        BUILDNAME="py311-x86"
         ;;
     amd64)
         PYTHON_PLATFORM="win_amd64"
+        BUILDNAME="py311-x86_64"
         ;;
     *)
         echo "error: unknow architecture [$STREAMLINK_PYTHON_ARCH]"
@@ -61,6 +64,7 @@ bundle_dir="${temp_dir}/streamlink"
 python_dir="${bundle_dir}/python"
 packages_dir="${bundle_dir}/packages"
 streamlink_clone_dir="${temp_dir}/streamlink-clone"
+venv_dir="${temp_dir}/venv"
 dist_dir="${root_dir}/dist"
 
 if [[ "$DO_CLEAN" == "true" ]]; then
@@ -82,36 +86,75 @@ if [[ -z ${STREAMLINK_REPO_DIR} ]]; then
 fi
 
 cd "${STREAMLINK_REPO_DIR}"
-
 git checkout .
 
-${PIP_EXECUTABLE} install --only-binary=:all: --platform "${PYTHON_PLATFORM}" --python-version "${STREAMLINK_PYTHON_VERSION}" --implementation "cp" --target "${packages_dir}" --upgrade "pycryptodome==3.19.0"
-${PIP_EXECUTABLE} install -t "${packages_dir}" --upgrade "pycountry==22.3.5" "setuptools==68.2.2" "PySocks==1.7.1" "attrs==23.1.0" "certifi==2023.7.22" "cffi==1.16.0" "charset_normalizer==3.3.1" "h11==0.14.0" "idna==3.4" "isodate==0.6.1" "outcome==1.3.0" "pycparser==2.21" "requests==2.31.0" "six==1.16.0" "sniffio==1.3.0" "sortedcontainers==2.4.0" "trio==0.22.2" "trio_websocket==0.11.1" "typing_extensions==4.8.0" "urllib3==2.0.7" "websocket_client==1.6.4" "wsproto==1.2.0"
+if [ -d "${venv_dir}" ]; then
+    rm -Rf "${venv_dir}"
+fi
+
+"${PYTHON_EXECUTABLE}" -m venv "${venv_dir}"
+# shellcheck disable=1091
+source "${venv_dir}/bin/activate"
+pip install "yq>=3.0.0"
+
+CONFIG_YML="${temp_dir}/config.yml"
+
+wget -c -O "${CONFIG_YML}" "https://raw.githubusercontent.com/streamlink/windows-builds/master/config.yml"
+
+PIP_ARGS=(
+  --isolated
+  --disable-pip-version-check
+)
+
+DISTS_IGNORE=(
+  setuptools
+)
+
+REQUIREMENTS_WHEELS_FILE="${temp_dir}/requirements_wheels.txt"
+yq -r ".builds[\"${BUILDNAME}\"].dependencies.wheels | to_entries[] | \"\(.key)==\(.value)\"" < "${CONFIG_YML}" | awk '{ print $1 }' > "${REQUIREMENTS_WHEELS_FILE}"
+
+${PIP_EXECUTABLE} install \
+    "${PIP_ARGS[@]}" \
+    --only-binary=:all: \
+    --platform="${PYTHON_PLATFORM}" \
+    --python-version="${STREAMLINK_PYTHON_VERSION}" \
+    --implementation="cp" \
+    --no-deps \
+    --target="${packages_dir}" \
+    --no-compile \
+    --requirement="${REQUIREMENTS_WHEELS_FILE}"
+
+REQUIREMENTS_SDISTS_FILE="${temp_dir}/requirements_sdists.txt"
+# shellcheck disable=2116
+yq -r --arg keys "$(echo "${DISTS_IGNORE[*]}")" ".builds[\"${BUILDNAME}\"].dependencies.sdists | delpaths(\$keys | split(\" \") | map([.])) | to_entries[] | \"\(.key)==\(.value)\"" < "${CONFIG_YML}" | awk '{ print $1 }' > "${REQUIREMENTS_SDISTS_FILE}"
+
+${PIP_EXECUTABLE} install \
+    "${PIP_ARGS[@]}" \
+    --no-binary=:all: \
+    --no-deps \
+    --target="${packages_dir}" \
+    --no-compile \
+    --requirement="${REQUIREMENTS_SDISTS_FILE}"
 
 cd "${STREAMLINK_REPO_DIR}"
 
-STREAMLINK_VERSION=$(${PYTHON_EXECUTABLE} setup.py --version)
-STREAMLINK_VERSION=$(echo "${STREAMLINK_VERSION}" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/g')
-STREAMLINK_VERSION_EXTENDED="$(git describe --tags | sed 's/v//g')"
-build_date=$(date "+%Y%m%d")
-STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-$(git rev-parse --abbrev-ref HEAD)"
-STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-${build_date}"
-STREAMLINK_VERSION="${STREAMLINK_VERSION} (${STREAMLINK_VERSION_EXTENDED})"
-
-"${PYTHON_EXECUTABLE}" "setup.py" sdist -d "${temp_dir}"
-"${PYTHON_EXECUTABLE}" "setup.py" bdist_wheel  -d "${temp_dir}"
-"${PYTHON_EXECUTABLE}" "setup.py" bdist_wheel --plat-name "${PYTHON_PLATFORM}" -d "${temp_dir}"
+${PIP_EXECUTABLE} install \
+    "${PIP_ARGS[@]}" \
+    --no-cache-dir \
+    --platform="${PYTHON_PLATFORM}" \
+    --python-version="${STREAMLINK_PYTHON_VERSION}" \
+    --implementation="cp" \
+    --no-deps \
+    --target="${packages_dir}" \
+    --no-compile \
+    --upgrade \
+    "${STREAMLINK_REPO_DIR}"
 
 cd "${root_dir}"
 
 unzip -o "${temp_dir}/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip" -d "${python_dir}"
 # include the Windows 10 Universal Runtime
 unzip -o "msvcrt_${PYTHON_PLATFORM}.zip" -d "${python_dir}"
-
-unzip -o "wheels/lxml-5.0.0a0-cp312-cp312-${PYTHON_PLATFORM}.whl" -d "${packages_dir}"
-
-unzip -o "${temp_dir}/streamlink*none-any.whl" -d "${packages_dir}"
-unzip -o "${temp_dir}/streamlink*${PYTHON_PLATFORM}.whl" -d "${packages_dir}"
 
 cp "${root_dir}/streamlink-script.py" "${bundle_dir}/streamlink-script.py"
 cp "${root_dir}/streamlink.bat" "${bundle_dir}/streamlink.bat"
@@ -129,6 +172,16 @@ cp -r "${ffmpeg_extracted_dir}/README.txt" "${bundle_dir}/ffmpeg/"
 wget -c -O "${bundle_dir}/config.default" "https://raw.githubusercontent.com/streamlink/windows-installer/master/files/config"
 
 sed -i "s/^ffmpeg-ffmpeg=.*/#ffmpeg-ffmpeg=/g" "${bundle_dir}/config.default"
+
+cd "${STREAMLINK_REPO_DIR}"
+
+STREAMLINK_VERSION=$(PYTHONPATH="${packages_dir}" python -c "from importlib.metadata import version;print(version('streamlink'))")
+STREAMLINK_VERSION=$(echo "${STREAMLINK_VERSION}" | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/g')
+STREAMLINK_VERSION_EXTENDED="$(git describe --tags | sed 's/v//g')"
+build_date=$(date "+%Y%m%d")
+STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-$(git rev-parse --abbrev-ref HEAD)"
+STREAMLINK_VERSION_EXTENDED="${STREAMLINK_VERSION_EXTENDED}-${build_date}"
+STREAMLINK_VERSION="${STREAMLINK_VERSION} (${STREAMLINK_VERSION_EXTENDED})"
 
 rm "${bundle_dir}/packages/streamlink/_version.py"
 echo "__version__ = \"${STREAMLINK_VERSION}\"" > "${bundle_dir}/packages/streamlink/_version.py"

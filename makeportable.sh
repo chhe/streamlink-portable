@@ -106,12 +106,8 @@ PIP_ARGS=(
   --disable-pip-version-check
 )
 
-DISTS_IGNORE=(
-  setuptools
-)
-
 REQUIREMENTS_WHEELS_FILE="${temp_dir}/requirements_wheels.txt"
-yq -r ".builds[\"${BUILDNAME}\"].dependencies.wheels | to_entries[] | \"\(.key)==\(.value)\"" < "${CONFIG_YML}" | grep -v lxml | awk '{ print $1 }' > "${REQUIREMENTS_WHEELS_FILE}"
+yq -r ".builds[\"${BUILDNAME}\"].dependencies | to_entries[] | \"\(.key)==\(.value)\"" < "${CONFIG_YML}" | grep -v lxml | awk '{ print $1 }' > "${REQUIREMENTS_WHEELS_FILE}"
 
 ${PIP_EXECUTABLE} install \
     "${PIP_ARGS[@]}" \
@@ -123,18 +119,6 @@ ${PIP_EXECUTABLE} install \
     --target="${packages_dir}" \
     --no-compile \
     --requirement="${REQUIREMENTS_WHEELS_FILE}"
-
-REQUIREMENTS_SDISTS_FILE="${temp_dir}/requirements_sdists.txt"
-# shellcheck disable=2116
-yq -r --arg keys "$(echo "${DISTS_IGNORE[*]}")" ".builds[\"${BUILDNAME}\"].dependencies.sdists | delpaths(\$keys | split(\" \") | map([.])) | to_entries[] | \"\(.key)==\(.value)\"" < "${CONFIG_YML}" | awk '{ print $1 }' > "${REQUIREMENTS_SDISTS_FILE}"
-
-${PIP_EXECUTABLE} install \
-    "${PIP_ARGS[@]}" \
-    --no-binary=:all: \
-    --no-deps \
-    --target="${packages_dir}" \
-    --no-compile \
-    --requirement="${REQUIREMENTS_SDISTS_FILE}"
 
 cd "${STREAMLINK_REPO_DIR}"
 

@@ -43,11 +43,11 @@ done
 case $STREAMLINK_PYTHON_ARCH in
     win32)
         PYTHON_PLATFORM="win32"
-        BUILDNAME="py311-x86"
+        BUILDNAME="py312-x86"
         ;;
     amd64)
         PYTHON_PLATFORM="win_amd64"
-        BUILDNAME="py311-x86_64"
+        BUILDNAME="py312-x86_64"
         ;;
     *)
         echo "error: unknow architecture [$STREAMLINK_PYTHON_ARCH]"
@@ -107,7 +107,7 @@ PIP_ARGS=(
 )
 
 REQUIREMENTS_WHEELS_FILE="${temp_dir}/requirements_wheels.txt"
-yq -r ".builds[\"${BUILDNAME}\"].dependencies | to_entries[] | \"\(.key)==\(.value)\"" < "${CONFIG_YML}" | grep -v lxml | awk '{ print $1 }' > "${REQUIREMENTS_WHEELS_FILE}"
+yq -r ".builds[\"${BUILDNAME}\"].dependencies | to_entries[] | \"\(.key)==\(.value)\"" < "${CONFIG_YML}" | awk '{ print $1 }' > "${REQUIREMENTS_WHEELS_FILE}"
 
 ${PIP_EXECUTABLE} install \
     "${PIP_ARGS[@]}" \
@@ -139,8 +139,6 @@ cd "${root_dir}"
 unzip -o "${temp_dir}/python-${STREAMLINK_PYTHON_VERSION}-embed-${STREAMLINK_PYTHON_ARCH}.zip" -d "${python_dir}"
 # include the Windows 10 Universal Runtime
 unzip -o "msvcrt_${PYTHON_PLATFORM}.zip" -d "${python_dir}"
-
-unzip -o "wheels/lxml-5.0.0a0-cp312-cp312-${PYTHON_PLATFORM}.whl" -d "${packages_dir}"
 
 cp "${root_dir}/streamlink-script.py" "${bundle_dir}/streamlink-script.py"
 cp "${root_dir}/streamlink.bat" "${bundle_dir}/streamlink.bat"

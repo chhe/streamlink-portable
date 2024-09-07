@@ -1,0 +1,52 @@
+name: main
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  sh-checker:
+    name: sh-checker
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.7
+
+    - name: run sh-checker
+      uses: luizm/action-sh-checker@v0.8.0
+      with:
+        sh_checker_shellcheck_disable: true
+        sh_checker_shfmt_disable: true
+
+  conventional-commits:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.7
+
+    - name: conventional commits
+      uses: webiny/action-conventional-commits@v1.3.0
+
+  codespell:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.7
+
+    - name: Codespell
+      uses: codespell-project/actions-codespell@v2.1
+
+  typos:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v4.1.7
+
+    - name: typos
+      uses: crate-ci/typos@v1.24.5

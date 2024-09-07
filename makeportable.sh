@@ -50,7 +50,7 @@ case $STREAMLINK_PYTHON_ARCH in
         BUILDNAME="py312-x86_64"
         ;;
     *)
-        echo "error: unknow architecture [$STREAMLINK_PYTHON_ARCH]"
+        echo "error: unknown architecture [$STREAMLINK_PYTHON_ARCH]"
         exit 1
         ;;
 esac

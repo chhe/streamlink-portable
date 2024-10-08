@@ -93,8 +93,14 @@ if [ -d "${venv_dir}" ]; then
 fi
 
 "${PYTHON_EXECUTABLE}" -m venv "${venv_dir}"
-# shellcheck disable=1091
-source "${venv_dir}/bin/activate"
+if [ -f "${venv_dir}/bin/activate" ]; then
+    # shellcheck disable=1091
+    source "${venv_dir}/bin/activate"
+elif [ -f "${venv_dir}/Scripts/activate" ]; then
+    # shellcheck disable=1091
+    source "${venv_dir}/Scripts/activate"
+fi
+
 pip install "yq>=3.0.0"
 
 CONFIG_YML="${temp_dir}/config.yml"

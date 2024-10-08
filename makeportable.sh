@@ -7,7 +7,6 @@ PYTHON_EXECUTABLE="python"
 PIP_EXECUTABLE="pip"
 USE_SEVEN_ZIP="false"
 DO_CLEAN="false"
-BUILDNAME="py311-x86"
 
 while getopts ":a:s:p:c7i:" option; do
     case $option in

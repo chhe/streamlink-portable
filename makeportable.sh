@@ -42,7 +42,7 @@ done
 case $STREAMLINK_PYTHON_ARCH in
     win32)
         PYTHON_PLATFORM="win32"
-        BUILDNAME="py312-x86"
+        BUILDNAME="py312-x86_64"
         ;;
     amd64)
         PYTHON_PLATFORM="win_amd64"

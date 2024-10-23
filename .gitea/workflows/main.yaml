@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4.2.1
+      uses: actions/checkout@v4.2.2
 
     - name: run sh-checker
       uses: luizm/action-sh-checker@v0.9.0
@@ -26,7 +26,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4.2.1
+      uses: actions/checkout@v4.2.2
 
     - name: conventional commits
       uses: webiny/action-conventional-commits@v1.3.0
@@ -36,7 +36,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4.2.1
+      uses: actions/checkout@v4.2.2
 
     - name: Codespell
       uses: codespell-project/actions-codespell@v2.1
@@ -46,7 +46,7 @@ jobs:
 
     steps:
     - name: checkout
-      uses: actions/checkout@v4.2.1
+      uses: actions/checkout@v4.2.2
 
     - name: typos
       uses: crate-ci/typos@v1.26.1

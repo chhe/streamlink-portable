@@ -42,11 +42,11 @@ done
 case $STREAMLINK_PYTHON_ARCH in
     win32)
         PYTHON_PLATFORM="win32"
-        BUILDNAME="py312-x86_64"
+        BUILDNAME="py313-x86_64"
         ;;
     amd64)
         PYTHON_PLATFORM="win_amd64"
-        BUILDNAME="py312-x86_64"
+        BUILDNAME="py313-x86_64"
         ;;
     *)
         echo "error: unknown architecture [$STREAMLINK_PYTHON_ARCH]"

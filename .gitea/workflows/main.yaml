@@ -49,4 +49,4 @@ jobs:
       uses: actions/checkout@v6
 
     - name: typos
-      uses: crate-ci/typos@5374cbf686e897b15713110e233094e2874de7ef # master
+      uses: crate-ci/typos@aca895bf05aec0cb7dffa6f94495e923224d9f17 # master
